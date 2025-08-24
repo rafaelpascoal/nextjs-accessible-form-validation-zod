@@ -38,7 +38,7 @@ export const formSchema = z.object({
     .string()
     .refine(
       (val) => !Number.isNaN(Date.parse(val)),
-      { message: "Invalid date" }
+      { message: "Invalid date. Please enter a valid date: DD/MM/YYYY" }
     ),
 
   password: z

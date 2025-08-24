@@ -24,36 +24,42 @@ export default function Form() {
 
       {/* Name */}
       <div>
+        <label htmlFor="name">Name</label>
         <Input placeholder="Full name" {...register("name")} />
         {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
       </div>
 
       {/* Email */}
       <div>
+        <label htmlFor="email">Email</label>
         <Input placeholder="Email" {...register("email")} />
         {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
       </div>
 
       {/* Birth Date */}
       <div>
+        <label htmlFor="birthDate">Birth Date</label>
         <Input placeholder="Birth Date" {...register("birthDate")} />
         {errors.birthDate && <p className="text-red-500 text-sm">{errors.birthDate.message}</p>}
       </div>
 
       {/* Document */}
       <div>
+        <label htmlFor="document">Document</label>
         <Input placeholder="000.000.000-00" {...register("document")} />
         {errors.document && <p className="text-red-500 text-sm">{errors.document.message}</p>}
       </div>
 
       {/* Zip Code */}
       <div>
+        <label htmlFor="zipCode">Zip Code</label>
         <Input placeholder="00000-000" {...register("zipCode")} />
         {errors.zipCode && <p className="text-red-500 text-sm">{errors.zipCode.message}</p>}
       </div>
 
       {/* Phone */}
       <div>
+        <label htmlFor="phone">Phone</label>
         <Input placeholder="+55 11987654321" {...register("phone")} />
         {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
       </div>
@@ -95,6 +101,7 @@ export default function Form() {
                   trigger("country");    // force validation
                 }}
               >
+                <label htmlFor="country">Country</label>
                 <SelectTrigger>
                   <SelectValue placeholder="Country" />
                 </SelectTrigger>
