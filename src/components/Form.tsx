@@ -12,7 +12,7 @@ import Flag from "react-flagkit"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { useState } from "react"
-import { ChevronDownIcon } from "lucide-react"
+import { CalendarIcon } from "lucide-react"
 
 export default function Form() {
   const [open, setOpen] = useState(false)
@@ -60,7 +60,7 @@ export default function Form() {
                         readOnly
                         className="cursor-pointer pr-10"
                       />
-                      <ChevronDownIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                      <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 size-3.5 text-gray-500 pointer-events-none" />
                     </div>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
