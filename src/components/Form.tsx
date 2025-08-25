@@ -3,6 +3,7 @@
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { formSchema, FormSchema } from "@/Schemas/formSchema"
+import { format, parse } from "date-fns"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -63,8 +64,8 @@ export default function Form() {
                   <PopoverTrigger asChild>
                     <div className="relative">
                       <Input
-                        placeholder="DD/MM/YYYY"
-                        value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
+                        placeholder="MM/DD/YYYY"    
+                        value={field.value ? format(field.value, "MM/dd/yyyy") : ''}
                         readOnly
                         className="cursor-pointer pr-10"
                       />
