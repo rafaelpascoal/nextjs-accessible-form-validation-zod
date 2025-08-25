@@ -12,13 +12,21 @@ import Flag from "react-flagkit"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { useState } from "react"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Globe } from "lucide-react"
+import { PhoneInput } from "react-international-phone"
+import "react-international-phone/style.css"
 
 export default function Form() {
   const [open, setOpen] = useState(false)
-  const { register, handleSubmit, formState: { errors }, control, trigger } = useForm<FormSchema>({
+  const { control, handleSubmit, formState: { errors }, register, trigger } = useForm({
     resolver: zodResolver(formSchema),
-  })
+    mode: "onSubmit",
+    reValidateMode: "onBlur",
+    defaultValues: {
+      phone: "",
+      country: "",
+    },
+  });
 
   const onSubmit = (data: FormSchema) => {
     console.log("Form submitted:", data)
@@ -83,9 +91,10 @@ export default function Form() {
           />
         </div>
 
+        {/* Document */}
         <div>
           <label htmlFor="document" className="block text-sm font-medium mb-2">Document</label>
-          <Input placeholder="000.000.000-00" {...register("document")} />
+          <Input placeholder="00000000000" {...register("document")} />
           {errors.document && <p className="text-red-500 text-sm mt-1">{errors.document.message}</p>}
         </div>
       </div>
@@ -100,7 +109,7 @@ export default function Form() {
 
         <div>
           <label htmlFor="zipCode" className="block text-sm font-medium mb-2">Zip Code</label>
-          <Input placeholder="00000-000" {...register("zipCode")} />
+          <Input placeholder="00000000" {...register("zipCode")} />
           {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode.message}</p>}
         </div>
       </div>
@@ -109,15 +118,31 @@ export default function Form() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label htmlFor="phone" className="block text-sm font-medium mb-2">Phone</label>
-          <Input placeholder="+55 11987654321" {...register("phone")} />
-          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <div>
+                <PhoneInput
+                  value={field.value || ""}
+                  onChange={(phone) => {
+                    field.onChange(phone);
+                    trigger("phone");
+                  }}
+                  placeholder="Phone number"
+                  defaultCountry="us"
+                  preferredCountries={['br', 'us', 'pt']}
+                />
+                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+              </div>
+            )}
+          />
         </div>
 
         <div>
           <Controller
             control={control}
             name="country"
-            defaultValue="" // initial value required
             rules={{ required: true }}
             render={({ field }) => (
               <div>

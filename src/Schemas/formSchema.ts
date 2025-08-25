@@ -9,7 +9,9 @@ export const formSchema = z.object({
 
   document: z
     .string()
-    .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "Document must be in the format 000.000.000-00"),
+    .min(5, "Document number is required")
+    .max(20, "Document number must be less than 20 characters")
+    .regex(/^[a-zA-Z0-9]+$/, "Document must contain only letters and numbers"),
 
   email: z
     .string()
@@ -34,14 +36,45 @@ export const formSchema = z.object({
       { message: "Address must contain only letters and numbers" }
     ),
 
-
   zipCode: z
     .string()
-    .regex(/^\d{5}-\d{3}$/, "Zip Code must be in the format 00000-000"),
+    .min(4, "Zip code is required")
+    .max(10, "Zip code must be less than 10 characters")
+    .regex(/^[0-9\-]+$/, "Invalid zip code format"),
 
   phone: z
     .string()
-    .regex(/^\+\d{1,3}\s\d{9,12}$/, "Phone must include the country code, ex: +55 11987654321"),
+    .optional()
+    .optional()
+    .superRefine((val, ctx) => {
+      if (!val) return;
+
+      // if the user only left the country code, don't validate
+      if (/^\+\d{1,3}$/.test(val)) return;
+
+      if (val.length < 10) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Phone number is too short",
+        });
+      }
+
+      if (val.length > 20) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Phone number is too long",
+        });
+      }
+
+      if (!/^\+[1-9]\d{1,14}$/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid phone number format (use E.164, e.g. +15551234567)",
+        });
+      }
+    }),
+
+
 
   country: z
     .string()
@@ -58,15 +91,7 @@ export const formSchema = z.object({
         return date >= minAge && date <= today;
       },
       { message: "Please select a valid birth date (between today and 120 years ago)" }
-    ),
-
-  password: z
-    .string()
-    .min(8, "The password must have at least 8 characters")
-    .regex(/[A-Z]/, "The password must have at least one uppercase letter")
-    .regex(/[a-z]/, "The password must have at least one lowercase letter")
-    .regex(/\d/, "The password must have at least one number")
-    .regex(/[@$!%*?&]/, "The password must have at least one special character"),
+    )
 })
 
 export type FormSchema = z.infer<typeof formSchema>
