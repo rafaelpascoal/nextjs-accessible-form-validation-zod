@@ -22,6 +22,11 @@ export const formSchema = z.object({
       { message: "Invalid email. Please enter a valid email address: example@example.com" }
     ),
 
+  address: z
+    .string()
+    .min(1, "Address is required")
+    .max(100, "Address must have less than 100 characters"),
+
   zipCode: z
     .string()
     .regex(/^\d{5}-\d{3}$/, "Zip Code must be in the format 00000-000"),

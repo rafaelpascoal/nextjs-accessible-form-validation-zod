@@ -22,138 +22,128 @@ export default function Form() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-md mx-auto p-6 border rounded-lg">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl mx-auto p-6 border rounded-lg">
 
-      {/* Name */}
-      <div>
-        <label htmlFor="name">Name</label>
-        <Input placeholder="Full name" {...register("name")} />
-        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+      {/* Name and Email */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium mb-2">Name</label>
+          <Input placeholder="Full name" {...register("name")} />
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
+          <Input placeholder="Email" {...register("email")} />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+        </div>
       </div>
 
-      {/* Email */}
-      <div>
-        <label htmlFor="email">Email</label>
-        <Input placeholder="Email" {...register("email")} />
-        {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+      {/* Birth Date and Document */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="birthDate" className="block text-sm font-medium mb-2">Birth Date</label>
+          <Controller
+            control={control}
+            name="birthDate"
+            render={({ field }) => (
+              <div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Input 
+                      placeholder="DD/MM/YYYY" 
+                      value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
+                      readOnly
+                      className="cursor-pointer"
+                    />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={(date) => {
+                        field.onChange(date);
+                        trigger("birthDate");
+                      }}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+                {errors.birthDate && <p className="text-red-500 text-sm mt-1">{errors.birthDate.message}</p>}
+              </div>
+            )}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="document" className="block text-sm font-medium mb-2">Document</label>
+          <Input placeholder="000.000.000-00" {...register("document")} />
+          {errors.document && <p className="text-red-500 text-sm mt-1">{errors.document.message}</p>}
+        </div>
       </div>
 
-      {/* Birth Date */}
-      <div>
-        <label htmlFor="birthDate">Birth Date</label>
-        <Controller
-          control={control}
-          name="birthDate"
-          render={({ field }) => (
-            <div>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Input 
-                    placeholder="DD/MM/YYYY" 
-                    value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
-                    readOnly
-                    className="cursor-pointer"
-                  />
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={(date) => {
-                      field.onChange(date);
-                      trigger("birthDate");
-                    }}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                  />
-                </PopoverContent>
-              </Popover>
-              {errors.birthDate && <p className="text-red-500 text-sm">{errors.birthDate.message}</p>}
-            </div>
-          )}
-        />
+      {/* Address and Zip Code */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="address" className="block text-sm font-medium mb-2">Address</label>
+          <Input placeholder="Address" {...register("address")} />
+          {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="zipCode" className="block text-sm font-medium mb-2">Zip Code</label>
+          <Input placeholder="00000-000" {...register("zipCode")} />
+          {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode.message}</p>}
+        </div>
       </div>
 
-      {/* Document */}
-      <div>
-        <label htmlFor="document">Document</label>
-        <Input placeholder="000.000.000-00" {...register("document")} />
-        {errors.document && <p className="text-red-500 text-sm">{errors.document.message}</p>}
-      </div>
+      {/* Phone and Country */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium mb-2">Phone</label>
+          <Input placeholder="+55 11987654321" {...register("phone")} />
+          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+        </div>
 
-      {/* Zip Code */}
-      <div>
-        <label htmlFor="zipCode">Zip Code</label>
-        <Input placeholder="00000-000" {...register("zipCode")} />
-        {errors.zipCode && <p className="text-red-500 text-sm">{errors.zipCode.message}</p>}
-      </div>
-
-      {/* Phone */}
-      <div>
-        <label htmlFor="phone">Phone</label>
-        <Input placeholder="+55 11987654321" {...register("phone")} />
-        {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
-      </div>
-
-      {/* Country (Select) */}
-
-      {/*
-        Observations about the custom Select with shadcn/ui and Zod validation:
-
-        1. The Select of shadcn/ui is not a native HTML input, so the react-hook-form cannot
-          capture the value automatically as it would with an <input>.
-
-        2. So, we use the Controller of react-hook-form to connect the field to the form.
-
-        3. It is necessary to define `defaultValue=""` so that Zod does not return "invalid input"
-          when the field is empty.
-
-        4. We call `trigger("country")` inside the onValueChange to force the Zod validation
-          as soon as the user selects a country, ensuring that the custom message appears.
-
-        ✅ In this way:
-          - The selected value is synchronized correctly with the RHF.
-          - Zod validates the field and returns the message defined in the schema.
-          - The validation works like native fields of the form.
-      */}
-
-      <div>
-        <Controller
-          control={control}
-          name="country"
-          defaultValue="" // initial value required
-          rules={{ required: true }}
-          render={({ field }) => (
-            <div>
-              <Select
-                value={field.value}
-                onValueChange={(value) => {
-                  field.onChange(value); // update RHF
-                  trigger("country");    // force validation
-                }}
-              >
-                <label htmlFor="country">Country</label>
-                <SelectTrigger>
-                  <SelectValue placeholder="Country" />
-                </SelectTrigger>
-                <SelectContent>
-                  {countries.map((country) => (
-                    <SelectItem key={country.value} value={country.value}>
-                      <div className="flex items-center gap-2">
-                        <Flag country={country.value.toUpperCase()} />
-                        {country.label}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.country && (
-                <p className="text-red-500 text-sm">{errors.country.message}</p>
-              )}
-            </div>
-          )}
-        />
+        <div>
+          <Controller
+            control={control}
+            name="country"
+            defaultValue="" // initial value required
+            rules={{ required: true }}
+            render={({ field }) => (
+              <div>
+                <label htmlFor="country" className="block text-sm font-medium mb-2">Country</label>
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value); // update RHF
+                    trigger("country");    // force validation
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {countries.map((country) => (
+                      <SelectItem key={country.value} value={country.value}>
+                        <div className="flex items-center gap-2">
+                          <Flag country={country.value.toUpperCase()} />
+                          {country.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.country && (
+                  <p className="text-red-500 text-sm mt-1">{errors.country.message}</p>
+                )}
+              </div>
+            )}
+          />
+        </div>
       </div>
 
       {/* Button */}
