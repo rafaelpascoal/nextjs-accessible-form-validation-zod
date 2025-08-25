@@ -35,10 +35,16 @@ export const formSchema = z.object({
     .min(1, "Select a country"),
 
   birthDate: z
-    .string()
+    .date({
+      message: "Birth date is required. Please select a valid date",
+    })
     .refine(
-      (val) => !Number.isNaN(Date.parse(val)),
-      { message: "Invalid date. Please enter a valid date: DD/MM/YYYY" }
+      (date) => {
+        const today = new Date();
+        const minAge = new Date(today.getFullYear() - 120, today.getMonth(), today.getDate());
+        return date >= minAge && date <= today;
+      },
+      { message: "Please select a valid birth date (between today and 120 years ago)" }
     ),
 
   password: z

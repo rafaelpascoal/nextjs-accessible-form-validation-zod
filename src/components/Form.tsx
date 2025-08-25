@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"
 import { countries } from "@/utils/Countries"
 import Flag from "react-flagkit"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
 
 export default function Form() {
   const { register, handleSubmit, formState: { errors }, control, trigger } = useForm<FormSchema>({
@@ -39,8 +41,38 @@ export default function Form() {
       {/* Birth Date */}
       <div>
         <label htmlFor="birthDate">Birth Date</label>
-        <Input placeholder="Birth Date" {...register("birthDate")} />
-        {errors.birthDate && <p className="text-red-500 text-sm">{errors.birthDate.message}</p>}
+        <Controller
+          control={control}
+          name="birthDate"
+          render={({ field }) => (
+            <div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Input 
+                    placeholder="DD/MM/YYYY" 
+                    value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
+                    readOnly
+                    className="cursor-pointer"
+                  />
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={(date) => {
+                      field.onChange(date);
+                      trigger("birthDate");
+                    }}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+              {errors.birthDate && <p className="text-red-500 text-sm">{errors.birthDate.message}</p>}
+            </div>
+          )}
+        />
       </div>
 
       {/* Document */}
