@@ -25,7 +25,15 @@ export const formSchema = z.object({
   address: z
     .string()
     .min(1, "Address is required")
-    .max(100, "Address must have less than 100 characters"),
+    .max(100, "Address must have less than 100 characters")
+    .refine(
+      (val) => {
+        const addressRegex = /^[a-zA-Z0-9\s]+$/;
+        return addressRegex.test(val);
+      },
+      { message: "Address must contain only letters and numbers" }
+    ),
+
 
   zipCode: z
     .string()
