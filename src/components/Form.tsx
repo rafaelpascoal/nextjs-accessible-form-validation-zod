@@ -11,8 +11,11 @@ import { countries } from "@/utils/Countries"
 import Flag from "react-flagkit"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
+import { useState } from "react"
+import { ChevronDownIcon } from "lucide-react"
 
 export default function Form() {
+  const [open, setOpen] = useState(false)
   const { register, handleSubmit, formState: { errors }, control, trigger } = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
   })
@@ -48,16 +51,19 @@ export default function Form() {
             name="birthDate"
             render={({ field }) => (
               <div>
-                <Popover>
+                <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
-                    <Input 
-                      placeholder="DD/MM/YYYY" 
-                      value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
-                      readOnly
-                      className="cursor-pointer"
-                    />
+                    <div className="relative">
+                      <Input
+                        placeholder="DD/MM/YYYY"
+                        value={field.value ? field.value.toLocaleDateString('pt-BR') : ''}
+                        readOnly
+                        className="cursor-pointer pr-10"
+                      />
+                      <ChevronDownIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                    </div>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
                       selected={field.value}
